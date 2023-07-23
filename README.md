@@ -17,3 +17,4 @@
 
 * [An Introduction to Identity and Access Management](https://curity.io/resources/learn/introduction-identity-and-access-management/)
 * [Why you should not use JWT](https://apibakery.com/blog/tech/no-jwt/)
+* [API Authentication techniques](https://docs.google.com/spreadsheets/d/1tAX5ZJzluilhoYKjra-uHbMCZraaQkqIHl3RIQ8mVkM/edit?pli=1#gid=0)
