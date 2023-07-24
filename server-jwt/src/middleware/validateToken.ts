@@ -26,7 +26,7 @@ export const validateToken = (userType: String) => {
         const accessToken = header.split(' ')[1];
   
         // verification of access token
-        const test = jwt.verify(
+        jwt.verify(
           accessToken,
           process.env.ACCESS_TOKEN,
           (err, decoded) => {
@@ -43,7 +43,6 @@ export const validateToken = (userType: String) => {
             next();
           }
         );
-        // console.
       }
     } catch (err) {
       return response.status(500).json({err: 'Token not provided.'});
