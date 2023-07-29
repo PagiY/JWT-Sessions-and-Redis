@@ -1,0 +1,29 @@
+POST http://localhost:8000/api/login
+content-type: application/json
+
+{
+  "username": "Paula_Client",
+  "password": "my_password",
+  "user_type": "client"
+}
+
+###
+
+POST http://localhost:8000/api/login
+content-type: application/json
+
+{
+  "username": "Paula_Admin",
+  "password": "my_password",
+  "user_type": "admin"
+}
+
+###
+
+GET http://localhost:8000/api/admin
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiUGF1bGFfQWRtaW4iLCJpYXQiOjE2OTAyNDUyNjMsImV4cCI6MTY5MDMzMTY2MywiYXVkIjoiYWRtaW4iLCJpc3MiOiJwYXN5ZW50ZSIsInN1YiI6IjEifQ.jn-o-W13zIiwcAZzp6B3RE264d7ZT0N3aQvV2YH0GHY
+
+###
+
+GET http://localhost:8000/api/client
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiUGF1bGFfQ2xpZW50IiwiaWF0IjoxNjkwMjQ1OTk1LCJleHAiOjE2OTAyNDYyOTUsImF1ZCI6ImNsaWVudCIsImlzcyI6InBhc3llbnRlIiwic3ViIjoiMSJ9._gFPbGUA8aMfu_jxhQ9OZT_YbvyquaT3ZRVBZ1tNfGQ
