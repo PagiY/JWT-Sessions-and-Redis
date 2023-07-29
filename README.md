@@ -6,6 +6,7 @@
 
 * Stateless approach. No database required but client-side must save the token (via cookie or localStorage - not recommended).
 * Good for server-server communications or microservices architecture.
+* Uses the concept of refresh tokens, where an expired access token is secretly refreshed and given a new token without logging out the user.
 
 ## READINGS
 
