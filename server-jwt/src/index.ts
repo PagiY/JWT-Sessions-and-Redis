@@ -15,4 +15,4 @@ app.use('/api/client', client);
 
 app.listen(PORT, () => {
   console.log(`Listening on PORT ${PORT}`);
-})
+});
