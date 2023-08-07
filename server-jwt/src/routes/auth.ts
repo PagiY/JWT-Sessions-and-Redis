@@ -6,27 +6,32 @@ dotenv.config();
 
 const auth = express.Router();
 
+// route to verify access token
 auth.get('/', (request: Request, response: Response) => {
   response.send(`Hello ${process.env.NAME}`);
 });
 
 auth.post('/login', (request: Request, response: Response) => {
-  const { username, password, user_type } = request.body;
+  console.log('/login');
 
+  const { username, password, user_type } = request.body;
+  
+  if (username === '' || password === '') {
+    return response.status(400).json({error: 'Username and password must not be blank'});
+  }
   const data = {
     user: username,
   };
   
-  if(!process.env.ACCESS_TOKEN) {
-    throw new Error('ACCESS TOKEN key must be defined');
+  if(!process.env.ACCESS_TOKEN || !process.env.REFRESH_TOKEN) {
+    throw new Error('ACCESS TOKEN or REFRESH TOKEN key must be defined');
   }
-
   // access token - short-lived token
   const accessT = jwt.sign(
     data,
     process.env.ACCESS_TOKEN,
     {
-      expiresIn: "5 minutes", // expiration date
+      expiresIn: "1m", // expiration date
       audience: user_type, // type
       issuer: 'pasyente',
       subject: "1", // specific user id
@@ -35,9 +40,9 @@ auth.post('/login', (request: Request, response: Response) => {
   
   const refreshT = jwt.sign(
     data,
-    process.env.ACCESS_TOKEN,
+    process.env.REFRESH_TOKEN,
     {
-      expiresIn: "1 day", // expiration date
+      expiresIn: "5m", // expiration date
       audience: user_type, // type
       issuer: 'pasyente',
       subject: "1", // specific user id
@@ -47,9 +52,11 @@ auth.post('/login', (request: Request, response: Response) => {
   response
     .cookie('accessToken', accessT, {
       httpOnly: true,
+      path: '/',
     })
     .cookie('refreshToken', refreshT, {
       httpOnly: true,
+      path: '/',
     })
     .json({accessToken: accessT});
 
@@ -64,6 +71,25 @@ auth.post('/refresh', (request: Request, response: Response) => {
   //  3. decrypt if encrypted
   //  4. verify refresh token
   //  5. issue new access token if valid refresh token
+
+  // if jwt refresh token is not saved to db:
+  //  1. get refresh token from request cookie
+  const { refreshToken } = request.cookies;
+  //  2. verify refresh token
+  if (refreshToken) {
+
+    if(!process.env.REFRESH_TOKEN) {
+      throw new Error('ACCESS TOKEN or REFRESH TOKEN key must be defined');
+    }
+
+    try {
+      const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN);
+
+    } catch (err) {
+
+    }
+  }
+  //  3. issue new access token if valid refresh token
 });
 
 export default auth;
