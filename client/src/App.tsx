@@ -1,5 +1,6 @@
 import { Login } from "./views/Login";
 import { Register } from "./views/Registration";
+import { Dashboard } from "./views/Dashboard";
 
 import {
   createBrowserRouter,
@@ -14,10 +15,15 @@ const router = createBrowserRouter([
   {
     path: '/register',
     element: <Register />,
+  },
+  {
+    path: '/dashboard',
+    element: <Dashboard />,
   }
 ])
 
 export const App = () => {
+  
   return (
     <RouterProvider router={router} />
   );

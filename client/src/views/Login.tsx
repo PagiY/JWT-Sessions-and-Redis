@@ -1,18 +1,24 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { login } from '../api/login';
 
 export const Login = () => {
   const navigate = useNavigate();
+  
+  useEffect(() => {
+    const tokenItem = JSON.parse(window.localStorage.getItem('access_token') || '{}');
+  
+    if (tokenItem !== null) {
+      navigate('/dashboard');
+    }
+  }, [navigate]);
 
   const [form, setForm] = useState<{
       username: string,
       password: string,
-      user_type: 'client' | 'admin'
   }>({
     username: '',
     password: '',
-    user_type: 'client',
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>) => {
@@ -26,9 +32,10 @@ export const Login = () => {
     e.preventDefault();
   
     login(form)
-      .then(() => { 
-        console.log('success');
-        navigate('/');
+      .then((res) => {
+        // console.log(res);
+        window.localStorage.setItem('access_token', JSON.stringify(res));
+        navigate('/dashboard');
       })
       .catch((err) => console.log(err));
   };
@@ -55,19 +62,6 @@ export const Login = () => {
           value={form.password}
           onChange={handleChange}
         />
-      </label>
-      <br />
-      <label htmlFor="user_type">
-        User Type: 
-        <select
-          id="user_type"
-          name="user_type"
-          value={form.user_type}
-          onChange={handleChange}
-        >
-          <option value="client">Client</option>
-          <option value="admin">Admin</option>
-        </select>
       </label>
       <br />
       <button type="submit">Login</button>
