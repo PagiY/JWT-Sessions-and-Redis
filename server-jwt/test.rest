@@ -1,9 +1,13 @@
+GET http://localhost:8000/api/
+
+###
+
 POST http://localhost:8000/api/login
 content-type: application/json
 
 {
-  "username": "Paula_Client",
-  "password": "my_password",
+  "username": "pauchiie",
+  "password": "my_password12345",
   "user_type": "client"
 }
 
@@ -13,8 +17,8 @@ POST http://localhost:8000/api/login
 content-type: application/json
 
 {
-  "username": "Paula_Admin",
-  "password": "my_password",
+  "username": "pagiy003",
+  "password": "admin12345",
   "user_type": "admin"
 }
 

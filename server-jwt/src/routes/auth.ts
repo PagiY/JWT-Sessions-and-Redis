@@ -1,24 +1,46 @@
 import express, { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 dotenv.config();
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const auth = express.Router();
+
+const users = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'db.json'), 'utf-8'));
 
 // route to verify access token
 auth.get('/', (request: Request, response: Response) => {
-  response.send(`Hello ${process.env.NAME}`);
+  response.send(`Hello ${users}`);
 });
 
 auth.post('/login', (request: Request, response: Response) => {
   console.log('/login');
 
-  const { username, password, user_type } = request.body;
+  const { username, password } = request.body;
   
   if (username === '' || password === '') {
     return response.status(400).json({error: 'Username and password must not be blank'});
   }
+  
+  const user = users.filter((_user: {
+    id: number,
+    username: string,
+    password: string,
+    user_type: string
+  }) => {
+    return _user.username === username;
+  })
+
+  if (user.length === 0) {
+    return response.status(401).json({error: 'Invalid username or password'});
+  }
+
   const data = {
     user: username,
   };
@@ -32,7 +54,7 @@ auth.post('/login', (request: Request, response: Response) => {
     process.env.ACCESS_TOKEN,
     {
       expiresIn: "1m", // expiration date
-      audience: user_type, // type
+      audience: user[0].user_type, // type
       issuer: 'pasyente',
       subject: "1", // specific user id
     },
@@ -43,7 +65,7 @@ auth.post('/login', (request: Request, response: Response) => {
     process.env.REFRESH_TOKEN,
     {
       expiresIn: "5m", // expiration date
-      audience: user_type, // type
+      audience: user[0].user_type, // type
       issuer: 'pasyente',
       subject: "1", // specific user id
     },

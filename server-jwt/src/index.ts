@@ -9,7 +9,7 @@ const PORT = 8000;
 
 const app: Express = express();
 
-app.use(cors({credentials: true}));
+app.use(cors({origin: true, credentials: true}));
 app.use(express.json());
 app.use('/api', auth);
 app.use('/api/admin', admin);
