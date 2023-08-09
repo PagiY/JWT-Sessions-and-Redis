@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import jwt from 'jsonwebtoken';
+import jwt, { JsonWebTokenError, TokenExpiredError } from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import fs from 'fs';
 import path from 'path';
@@ -15,8 +15,26 @@ const auth = express.Router();
 const users = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'db.json'), 'utf-8'));
 
 // route to verify access token
-auth.get('/', (request: Request, response: Response) => {
-  response.send(`Hello ${users}`);
+auth.post('/', (request: Request, response: Response) => {
+  const { accessToken, refreshToken } = request.cookies;
+  if (accessToken && refreshToken) {
+    
+    if(!process.env.ACCESS_TOKEN || !process.env.REFRESH_TOKEN) {
+      throw new Error('ACCESS TOKEN or REFRESH TOKEN key must be defined');
+    }
+
+    try {
+      const decoded = jwt.verify(accessToken, process.env.ACCESS_TOKEN);
+      // if an error ocurred, either of the ff. happened:
+      // token expired, invalid token
+      // if that happened, client needs to verify using refresh tokens
+      return response.status(200).send(decoded);
+    } catch (err) {
+      return response.status(500).json({error: 'Server error. Could not get token.'})
+    }
+  }
+  console.log(request.cookies);
+  response.json({msg: `Hello ${users}`});
 });
 
 auth.post('/login', (request: Request, response: Response) => {

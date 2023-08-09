@@ -1,5 +1,6 @@
 import express, { Express } from 'express';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 
 import auth from './routes/auth.js';
 import admin from './routes/admin.js';
@@ -11,6 +12,8 @@ const app: Express = express();
 
 app.use(cors({origin: true, credentials: true}));
 app.use(express.json());
+app.use(cookieParser());
+
 app.use('/api', auth);
 app.use('/api/admin', admin);
 app.use('/api/client', client);
