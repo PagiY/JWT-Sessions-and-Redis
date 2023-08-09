@@ -1,17 +1,15 @@
-import { useState, useEffect } from 'react';
+import { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { login } from '../api/login';
 
+import { AuthContext } from '../contexts/AuthContext';
+
 export const Login = () => {
   const navigate = useNavigate();
-  
-  useEffect(() => {
-    const tokenItem = JSON.parse(window.localStorage.getItem('access_token') || '{}');
-  
-    if (tokenItem !== null) {
-      navigate('/dashboard');
-    }
-  }, [navigate]);
+  // we get and set the access token from context
+  const { accessToken, setAccessToken } = useContext(AuthContext);
+
+  console.log('Login', accessToken);
 
   const [form, setForm] = useState<{
       username: string,
@@ -34,7 +32,8 @@ export const Login = () => {
     login(form)
       .then((res) => {
         // console.log(res);
-        window.localStorage.setItem('access_token', JSON.stringify(res));
+        // window.localStorage.setItem('access_token', JSON.stringify(res));
+        setAccessToken(res.accessToken);
         navigate('/dashboard');
       })
       .catch((err) => console.log(err));

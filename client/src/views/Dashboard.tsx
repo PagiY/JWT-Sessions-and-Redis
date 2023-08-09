@@ -1,6 +1,18 @@
+import { useEffect, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../contexts/AuthContext';
+
 export const Dashboard = () => {
-  const tokenItem = JSON.parse(window.localStorage.getItem('access_token') || '{}');
-  console.log(tokenItem);
+  const navigate = useNavigate();
+  const { accessToken } = useContext(AuthContext);
+  
+  useEffect(() => {
+    if (accessToken === undefined) {
+      navigate('/');
+    }
+  }, [navigate, accessToken]);
+
+  console.log('Dashboard:', accessToken);
   return (
     <>
       Dashboard
