@@ -9,6 +9,7 @@ import {
   RouterProvider,
 } from 'react-router-dom';
 
+import { Protected } from './components/Protected';
 import { AuthContext } from "./contexts/AuthContext";
 import { getToken } from './api/getToken';
 
@@ -23,7 +24,11 @@ const router = createBrowserRouter([
   },
   {
     path: '/dashboard',
-    element: <Dashboard />,
+    element: (
+      <Protected>
+        <Dashboard />
+      </Protected>
+    ),
   }
 ])
 
@@ -35,8 +40,15 @@ export const App = () => {
   useEffect(() => {
     getToken()
       .then((res) => {
-        console.log(res);
-        // setAuth()
+        console.log('App', res);
+        if (res.accessToken !== undefined) {
+          setAuth(res.accessToken);
+        } else {
+          setAuth(undefined);
+        }
+      })
+      .catch(() => {
+        setAuth(undefined);
       })
   }, []);
 

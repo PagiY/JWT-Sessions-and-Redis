@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { login } from '../api/login';
 
@@ -8,8 +8,13 @@ export const Login = () => {
   const navigate = useNavigate();
   // we get and set the access token from context
   const { accessToken, setAccessToken } = useContext(AuthContext);
-
-  console.log('Login', accessToken);
+  
+  useEffect(() => {
+    console.log('login', accessToken);
+    if (accessToken !== undefined) {
+      navigate('/dashboard');
+    }
+  }, [navigate, accessToken]);
 
   const [form, setForm] = useState<{
       username: string,
