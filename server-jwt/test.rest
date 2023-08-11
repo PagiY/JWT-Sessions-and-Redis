@@ -1,5 +1,10 @@
 POST http://localhost:8000/api/
-authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InBhZ2l5MDAzIiwiaWF0IjoxNjkwODA0OTYxLCJleHAiOjE2OTA4MDU4NjF9.NQyT2eP0aVIVR6qEck-VAauA2vXKubLqm4VJ-0BiqsY
+authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoicGFnaXkwMDMiLCJpYXQiOjE2OTE2NzUxMTEsImV4cCI6MTY5MTY3NTQxMSwiYXVkIjoiYWRtaW4iLCJpc3MiOiJwYXN5ZW50ZSIsInN1YiI6InVuZGVmaW5lZCJ9.DErNhUQGQaU-M_9NWXWLBsSJ89TH4j663up6PjBwKa4
+
+###
+
+POST http://localhost:8000/api/refresh
+authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoicGF1Y2hpaWUiLCJpYXQiOjE2OTE2Nzg0NDMsImV4cCI6MTY5MTY3OTM0MywiYXVkIjoiY2xpZW50IiwiaXNzIjoicGFzeWVudGUiLCJzdWIiOiJ1bmRlZmluZWQifQ.Wykhb11um9zKwLqiN37HgNuoVsOeyy7fWD2HyywFxkA
 
 ###
 
@@ -8,8 +13,7 @@ content-type: application/json
 
 {
   "username": "pauchiie",
-  "password": "my_password12345",
-  "user_type": "client"
+  "password": "my_password12345"
 }
 
 ###
@@ -19,8 +23,7 @@ content-type: application/json
 
 {
   "username": "pagiy003",
-  "password": "admin12345",
-  "user_type": "admin"
+  "password": "admin12345"
 }
 
 ###

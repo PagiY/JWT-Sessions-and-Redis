@@ -1,12 +1,12 @@
 [
   {
-    "id": 1,
+    "id": "1",
     "username": "pagiy003",
     "password": "admin12345",
     "user_type": "admin"
   },
   {
-    "id": 2,
+    "id": "2",
     "username": "pauchiie",
     "password": "my_password12345",
     "user_type": "client"

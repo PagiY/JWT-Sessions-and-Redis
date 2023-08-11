@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import jwt, { JsonWebTokenError, TokenExpiredError } from 'jsonwebtoken';
+import jwt, { JsonWebTokenError, JwtPayload, TokenExpiredError } from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import fs from 'fs';
 import path from 'path';
@@ -17,6 +17,7 @@ const users = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'db.json'), 
 // route to verify access token
 auth.post('/', (request: Request, response: Response) => {
   const { accessToken, refreshToken } = request.cookies;
+
   if (accessToken && refreshToken) {
     
     if(!process.env.ACCESS_TOKEN || !process.env.REFRESH_TOKEN) {
@@ -24,21 +25,30 @@ auth.post('/', (request: Request, response: Response) => {
     }
 
     try {
-      const decoded = jwt.verify(accessToken, process.env.ACCESS_TOKEN);
-      // if an error ocurred, either of the ff. happened:
-      // token expired, invalid token
-      // if that happened, client needs to verify using refresh tokens
-      return response.status(200).send(decoded);
+      jwt.verify(
+        accessToken,
+        process.env.ACCESS_TOKEN,
+        (err: any, decoded: any) => {
+          if (err) {
+            // does not return access token
+            // causing the client-side context store to be undefined
+            return response.status(401).json(err);
+          } else {
+            // returns the access token if valid token,
+            // the client stores the access token in context
+            return response.status(200).json({accessToken});
+          }
+      });
+
     } catch (err) {
       return response.status(500).json({error: 'Server error. Could not get token.'})
     }
+  } else {
+    return response.status(500).json({error: 'No token found.'})
   }
-  console.log(request.cookies);
-  response.json({msg: `Hello ${users}`});
 });
 
 auth.post('/login', (request: Request, response: Response) => {
-  console.log('/login');
 
   const { username, password } = request.body;
   
@@ -52,7 +62,7 @@ auth.post('/login', (request: Request, response: Response) => {
     password: string,
     user_type: string
   }) => {
-    return _user.username === username;
+    return _user.username === username && _user.password === password;
   })
 
   if (user.length === 0) {
@@ -66,15 +76,17 @@ auth.post('/login', (request: Request, response: Response) => {
   if(!process.env.ACCESS_TOKEN || !process.env.REFRESH_TOKEN) {
     throw new Error('ACCESS TOKEN or REFRESH TOKEN key must be defined');
   }
+
   // access token - short-lived token
   const accessT = jwt.sign(
     data,
     process.env.ACCESS_TOKEN,
     {
-      expiresIn: "1m", // expiration date
+      expiresIn: "5 minutes", // expiration date
       audience: user[0].user_type, // type
       issuer: 'pasyente',
-      subject: "1", // specific user id
+      subject: String(user.id), // specific user id
+      algorithm: 'HS256',
     },
   );
   
@@ -82,13 +94,16 @@ auth.post('/login', (request: Request, response: Response) => {
     data,
     process.env.REFRESH_TOKEN,
     {
-      expiresIn: "5m", // expiration date
+      expiresIn: "15 minutes", // expiration date
       audience: user[0].user_type, // type
       issuer: 'pasyente',
-      subject: "1", // specific user id
+      subject: String(user.id), // specific user id
+      algorithm: 'HS256',
     },
   )
 
+  console.log('refreshToken', refreshT);
+  
   response
     .cookie('accessToken', accessT, {
       httpOnly: true,
@@ -102,6 +117,34 @@ auth.post('/login', (request: Request, response: Response) => {
 
 });
 
+auth.post('/logout', (request: Request, response: Response) => {
+  console.log('/logout');
+  const { refreshToken, accessToken } = request.cookies;
+
+  if (refreshToken && accessToken) {
+    
+    if(!process.env.ACCESS_TOKEN || !process.env.REFRESH_TOKEN) {
+      throw new Error('ACCESS TOKEN or REFRESH TOKEN key must be defined');
+    }
+
+    try {
+      
+      response
+      .cookie('accessToken', '', {
+        httpOnly: true,
+        path: '/',
+      })
+      .cookie('refreshToken', '', {
+        httpOnly: true,
+        path: '/',
+      })
+      .json({msg: 'Logged out.'});
+    } catch (err) {
+      return response.status(500).json({error: 'Server error. Failed to logout.'});
+    }
+
+  }
+});
 // route to request for new access tokens as long as the
 // refresh token is not yet expired
 auth.post('/refresh', (request: Request, response: Response) => {
@@ -111,6 +154,7 @@ auth.post('/refresh', (request: Request, response: Response) => {
   //  3. decrypt if encrypted
   //  4. verify refresh token
   //  5. issue new access token if valid refresh token
+  // ==========================================================
 
   // if jwt refresh token is not saved to db:
   //  1. get refresh token from request cookie
@@ -118,18 +162,46 @@ auth.post('/refresh', (request: Request, response: Response) => {
   //  2. verify refresh token
   if (refreshToken) {
 
-    if(!process.env.REFRESH_TOKEN) {
+    if(!process.env.ACCESS_TOKEN || !process.env.REFRESH_TOKEN) {
       throw new Error('ACCESS TOKEN or REFRESH TOKEN key must be defined');
     }
 
     try {
-      const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN);
+      const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN) as JwtPayload;
 
+      //  3. issue new access token if valid refresh token
+      const data = {
+        user: decoded.user,
+      };
+      // access token - short-lived token
+      const accessT = jwt.sign(
+        data,
+        process.env.ACCESS_TOKEN,
+        {
+          expiresIn: "5 minutes", // expiration date
+          audience: decoded.aud, // type
+          issuer: decoded.iss,
+          subject: decoded.sub, // specific user id
+          algorithm: 'HS256',
+        },
+      );
+
+      response
+      .cookie('accessToken', accessT, {
+        httpOnly: true,
+        path: '/',
+      })
+      .cookie('refreshToken', refreshToken, {
+        httpOnly: true,
+        path: '/',
+      })
+      .json({accessToken: accessT});
     } catch (err) {
-
+      return response.status(500).json({error: 'Server error. Failed to refresh tokens.'});
     }
+  } else {
+    return response.status(500).json({error: 'No refresh token found.'});
   }
-  //  3. issue new access token if valid refresh token
 });
 
 export default auth;
