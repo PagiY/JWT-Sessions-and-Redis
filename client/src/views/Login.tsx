@@ -5,12 +5,12 @@ import { login } from '../api/login';
 import { AuthContext } from '../contexts/AuthContext';
 
 export const Login = () => {
+
   const navigate = useNavigate();
   // we get and set the access token from context
   const { accessToken, setAccessToken } = useContext(AuthContext);
   
   useEffect(() => {
-    console.log('login', accessToken);
     if (accessToken !== undefined) {
       navigate('/dashboard');
     }
@@ -70,6 +70,8 @@ export const Login = () => {
       <br />
       <button type="submit">Login</button>
     </form>
+    <br />
+    <Link to="/admin">Login as Admin</Link>
     <br />
     <Link to="/register">Register</Link>
   </div> 

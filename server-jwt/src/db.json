@@ -10,5 +10,17 @@
     "username": "pauchiie",
     "password": "my_password12345",
     "user_type": "client"
+  },
+  {
+    "id": 3,
+    "username": "pagiy004",
+    "password": "admin12345",
+    "user_type": "admin"
+  },
+  {
+    "id": 4,
+    "username": "pagiy005",
+    "password": "admin12345",
+    "user_type": "admin"
   }
 ]

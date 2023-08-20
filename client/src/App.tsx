@@ -4,6 +4,12 @@ import { Login } from "./views/Login";
 import { Register } from "./views/Registration";
 import { Dashboard } from "./views/Dashboard";
 
+import { LoginAdmin } from './views/LoginAdmin';
+// Client login
+// import { LoginClient } from './views/LoginClient';
+
+// Admin login
+
 import {
   createBrowserRouter,
   RouterProvider,
@@ -16,8 +22,16 @@ import { getToken } from './api/getToken';
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <Login />
+    element: <Login />,
   },
+  {
+    path: '/admin',
+    element: <LoginAdmin />,
+  },
+  // {
+  //   path: '/login/admin',
+  //   element: <LoginClient />,
+  // },
   {
     path: '/register',
     element: <Register />,

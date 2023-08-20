@@ -35,3 +35,14 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiUGF1bGFfQ
 
 GET http://localhost:8000/api/client
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiUGF1bGFfQ2xpZW50IiwiaWF0IjoxNjkwMjQ1OTk1LCJleHAiOjE2OTAyNDYyOTUsImF1ZCI6ImNsaWVudCIsImlzcyI6InBhc3llbnRlIiwic3ViIjoiMSJ9._gFPbGUA8aMfu_jxhQ9OZT_YbvyquaT3ZRVBZ1tNfGQ
+
+###
+
+POST http://localhost:8000/api/register
+Content-Type: application/json
+
+{
+  "username": "pagiy005",
+  "password": "admin12345",
+  "user_type": "admin"
+}

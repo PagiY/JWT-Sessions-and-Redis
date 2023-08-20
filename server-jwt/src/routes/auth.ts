@@ -48,6 +48,42 @@ auth.post('/', (request: Request, response: Response) => {
   }
 });
 
+auth.post('/register', (request: Request, response: Response) => {
+  const { username, password, user_type } = request.body;
+
+  const existingUser = users.find((user: {
+    id: string | number,
+    username: string,
+    password: string,
+    user_type: string,
+  }) => {
+    return user.username === username;
+  });
+
+  if (existingUser) {
+    return response
+      .status(409)
+      .json({ error: 'Username exists' });
+  }
+
+  const user = {
+    id: users.length + 1,
+    username: username,
+    password: password,
+    user_type: user_type,
+  };
+
+  users.push(user);
+
+  const data = JSON.stringify(users);
+
+  fs.writeFileSync(path.join(__dirname, '..', 'db.json'), data);
+
+  return response
+    .status(200)
+    .json({ msg: 'User successfully registered' });
+});
+
 auth.post('/login', (request: Request, response: Response) => {
 
   const { username, password } = request.body;
@@ -114,7 +150,7 @@ auth.post('/login', (request: Request, response: Response) => {
       path: '/',
     })
     .json({accessToken: accessT});
-
+ 
 });
 
 auth.post('/logout', (request: Request, response: Response) => {
