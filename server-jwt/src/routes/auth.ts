@@ -118,7 +118,7 @@ auth.post('/login', (request: Request, response: Response) => {
     data,
     process.env.ACCESS_TOKEN,
     {
-      expiresIn: "5 minutes", // expiration date
+      expiresIn: "1 minute", // expiration date
       audience: user[0].user_type, // type
       issuer: 'pasyente',
       subject: String(user.id), // specific user id
@@ -130,7 +130,7 @@ auth.post('/login', (request: Request, response: Response) => {
     data,
     process.env.REFRESH_TOKEN,
     {
-      expiresIn: "15 minutes", // expiration date
+      expiresIn: "5 minutes", // expiration date
       audience: user[0].user_type, // type
       issuer: 'pasyente',
       subject: String(user.id), // specific user id
@@ -138,8 +138,6 @@ auth.post('/login', (request: Request, response: Response) => {
     },
   )
 
-  console.log('refreshToken', refreshT);
-  
   response
     .cookie('accessToken', accessT, {
       httpOnly: true,
@@ -154,7 +152,6 @@ auth.post('/login', (request: Request, response: Response) => {
 });
 
 auth.post('/logout', (request: Request, response: Response) => {
-  console.log('/logout');
   const { refreshToken, accessToken } = request.cookies;
 
   if (refreshToken && accessToken) {
@@ -184,6 +181,7 @@ auth.post('/logout', (request: Request, response: Response) => {
 // route to request for new access tokens as long as the
 // refresh token is not yet expired
 auth.post('/refresh', (request: Request, response: Response) => {
+  console.log('/refresh');
   // if jwt refresh token is saved to db:
   //  1. get user info
   //  2. get refresh token from db
@@ -195,16 +193,15 @@ auth.post('/refresh', (request: Request, response: Response) => {
   // if jwt refresh token is not saved to db:
   //  1. get refresh token from request cookie
   const { refreshToken } = request.cookies;
+
   //  2. verify refresh token
   if (refreshToken) {
-
     if(!process.env.ACCESS_TOKEN || !process.env.REFRESH_TOKEN) {
       throw new Error('ACCESS TOKEN or REFRESH TOKEN key must be defined');
     }
 
     try {
       const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN) as JwtPayload;
-
       //  3. issue new access token if valid refresh token
       const data = {
         user: decoded.user,
@@ -214,7 +211,7 @@ auth.post('/refresh', (request: Request, response: Response) => {
         data,
         process.env.ACCESS_TOKEN,
         {
-          expiresIn: "5 minutes", // expiration date
+          expiresIn: "1 minute", // expiration date
           audience: decoded.aud, // type
           issuer: decoded.iss,
           subject: decoded.sub, // specific user id
