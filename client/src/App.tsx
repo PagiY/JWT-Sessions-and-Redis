@@ -18,6 +18,7 @@ import {
 import { Protected } from './components/Protected';
 import { AuthContext } from "./contexts/AuthContext";
 import { getToken } from './api/getToken';
+import { refreshToken } from './api/refreshToken';
 
 const router = createBrowserRouter([
   {
@@ -54,11 +55,22 @@ export const App = () => {
   useEffect(() => {
     getToken()
       .then((res) => {
-        console.log('App', res);
         if (res.accessToken !== undefined) {
+
           setAuth(res.accessToken);
+
         } else {
-          setAuth(undefined);
+          // the access token might have expired. Use
+          // refresh token to refresh access token.
+          refreshToken()
+            .then((res) => {
+              if (res.accessToken !== undefined) {
+                setAuth(res.accessToken);
+              } else {
+                setAuth(undefined);
+              }
+            });
+  
         }
       })
       .catch(() => {
