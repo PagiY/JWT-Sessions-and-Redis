@@ -36,7 +36,7 @@ auth.post('/login', (request: Request, response: Response) => {
   }
 
   // if credentials are correct, store credentials in session
-  request.session.user_id = user.id;
+  request.session.user_id = user[0].id;
   request.session.username = user[0].username;
 
   console.log(request.session);
@@ -48,7 +48,7 @@ auth.post('/login', (request: Request, response: Response) => {
 auth.post('/logout', (request: Request, response: Response) => {
   request.session.destroy((err) => {
     return response.status(500)
-  })
+  });
 });
 
 export default auth;
