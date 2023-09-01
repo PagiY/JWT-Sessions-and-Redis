@@ -39,7 +39,6 @@ auth.post('/login', (request: Request, response: Response) => {
   request.session.user_id = user[0].id;
   request.session.username = user[0].username;
 
-  console.log(request.session);
   response
     .status(200)
     .json({msg: 'success'});
@@ -47,7 +46,7 @@ auth.post('/login', (request: Request, response: Response) => {
 
 auth.post('/logout', (request: Request, response: Response) => {
   request.session.destroy((err) => {
-    return response.status(500)
+    return response.status(500);
   });
 });
 
