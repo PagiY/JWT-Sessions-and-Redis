@@ -14,6 +14,7 @@
 #### Sessions
 
 * Stateful approach. Authentication data should be stored in both the client and server side.
+* Sessions can easily be invalidated.
 
 ## READINGS
 
