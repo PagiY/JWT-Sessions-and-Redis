@@ -11,6 +11,10 @@
 * Uses the concept of refresh tokens, where an expired access token is secretly refreshed and given a new token without logging out the user.
 * Refresh tokens can be stored in a database and must be encrypted
 
+#### Sessions
+
+* Stateful approach. Authentication data should be stored in both the client and server side.
+
 ## READINGS
 
 * [An Introduction to Identity and Access Management](https://curity.io/resources/learn/introduction-identity-and-access-management/)
