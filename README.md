@@ -23,3 +23,4 @@
 * [Why you should not use JWT](https://apibakery.com/blog/tech/no-jwt/)
 * [API Authentication techniques](https://docs.google.com/spreadsheets/d/1tAX5ZJzluilhoYKjra-uHbMCZraaQkqIHl3RIQ8mVkM/edit?pli=1#gid=0)
 * [JSON Web Tokens (JWT) — the only explanation you will ever need](https://arielweinberger.medium.com/json-web-token-jwt-the-only-explanation-youll-ever-need-cf53f0822f50)
+* [Authentication on the Web](https://github.com/alex996/presentations/blob/master/auth.md)
