@@ -2,8 +2,6 @@
 
 ### Exploring JWT and Sessions + Redis for user auth
 
-### Initialization: NodeJS with TypeScript
-
 #### JSON Web Tokens (JWT)
 
 * Stateless approach. No database required but client-side must save the token (via cookie or localStorage - not recommended).
