@@ -15,6 +15,8 @@
 * Sessions can easily be invalidated.
 * Sessions are generally recommended than JWT. 
 
+#### Redis and Sessions
+
 ## READINGS
 
 * [An Introduction to Identity and Access Management](https://curity.io/resources/learn/introduction-identity-and-access-management/)
